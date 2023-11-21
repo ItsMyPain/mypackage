@@ -23,8 +23,9 @@ class Classifier:
         self.scaler = MinMaxScaler()
         self.smote = SMOTE()
 
-    def _smote_data(self, x, y):
-        return self.smote.fit_resample(x, y)
+    def _smote_data(self):
+        data = self.smote.fit_resample(self.X_train, self.y_train)
+        self.X_train, self.y_train = data
 
     def _scale_data(self, x):
         return self.scaler.fit_transform(x)
@@ -41,20 +42,19 @@ class Classifier:
         x = df2.drop(columns=target)
         y = df2[target]
 
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            x, y, test_size=0.33, random_state=42, stratify=y
-        )
+        datasets = train_test_split(x, y, test_size=0.33, stratify=y)
+        self.X_train, self.X_test, self.y_train, self.y_test = datasets
 
     def train(self, filename: str, target: str, silent=True):
         df = pd.read_csv(filename)
         self._prepare_data(df, target)
-        self.X_train, self.y_train = self._smote_data(self.X_train, self.y_train)
+        self._smote_data()
         self.X_train = self._scale_data(self.X_train)
         train_pool = Pool(self.X_train, self.y_train)
         self.model.fit(train_pool, silent=silent)
         print("Model fitted")
 
-    def predict(self, filename: str, target: str, silent=True):
+    def predict(self, filename: str, target: str):
         df = pd.read_csv(filename)
         self._prepare_data(df, target)
         self.X_test = self._scale_data(self.X_test)
@@ -64,16 +64,16 @@ class Classifier:
         ans = pd.DataFrame({"predict": y_pred})
         ans.to_csv("predict.csv")
 
-    def save(self, directory='classifier', model_name='model', scaler_name='scaler'):
+    def save(self, directory="classifier", model="model", scaler="scaler"):
         Path(f"../models/{directory}").mkdir(parents=True, exist_ok=True)
-        self.model.save_model(f"../models/{directory}/{model_name}")
+        self.model.save_model(f"../models/{directory}/{model}")
         print("Model saved")
 
-        joblib.dump(self.scaler, f"../models/{directory}/{scaler_name}")
+        joblib.dump(self.scaler, f"../models/{directory}/{scaler}")
         print("Scaler saved")
 
-    def load(self, directory='classifier', model_name='model', scaler_name='scaler'):
-        self.model.load_model(f"../models/{directory}/{model_name}")
+    def load(self, directory="classifier", model="model", scaler="scaler"):
+        self.model.load_model(f"../models/{directory}/{model}")
         print("Model loaded")
-        self.scaler = joblib.load(f"../models/{directory}/{scaler_name}")
+        self.scaler = joblib.load(f"../models/{directory}/{scaler}")
         print("Scaler loaded")

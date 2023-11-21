@@ -1,6 +1,6 @@
 import requests
 
-from mypackage.classifier import Classifier
+from my_package.classifier import Classifier
 
 try:
     open("dataset.csv")
@@ -20,5 +20,5 @@ def infer():
     model.predict("dataset.csv", "Dx:Cancer")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     infer()

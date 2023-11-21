@@ -1,5 +1,4 @@
 import requests
-
 from classifier import Classifier
 
 try:
@@ -23,5 +22,5 @@ def train(iterations=1000, learning_rate=0.01, depth=6, silent=True):
     model.save()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     train(silent=False)
