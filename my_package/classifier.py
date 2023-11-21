@@ -62,7 +62,7 @@ class Classifier:
         score = recall_score(self.y_test, y_pred, average="macro")
         print("RECALL SCORE: ", score)
         ans = pd.DataFrame({"predict": y_pred})
-        ans.to_csv("predict.csv")
+        ans.to_csv("../predict.csv")
 
     def save(self, directory="classifier", model="model", scaler="scaler"):
         Path(f"../models/{directory}").mkdir(parents=True, exist_ok=True)
