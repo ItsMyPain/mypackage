@@ -46,7 +46,8 @@ class Classifier:
         self.X_train, self.X_test, self.y_train, self.y_test = datasets
 
     def train(self, filename: str, target: str, silent=True):
-        df = pd.read_csv(filename)
+        Path(f"../data/{filename}").mkdir(parents=True, exist_ok=True)
+        df = pd.read_csv(f"../data/{filename}")
         self._prepare_data(df, target)
         self._smote_data()
         self.X_train = self._scale_data(self.X_train)
@@ -55,7 +56,8 @@ class Classifier:
         print("Model fitted")
 
     def predict(self, filename: str, target: str):
-        df = pd.read_csv(filename)
+        Path(f"../data/{filename}").mkdir(parents=True, exist_ok=True)
+        df = pd.read_csv(f"../data/{filename}")
         self._prepare_data(df, target)
         self.X_test = self._scale_data(self.X_test)
         y_pred = self.model.predict(self.X_test)
