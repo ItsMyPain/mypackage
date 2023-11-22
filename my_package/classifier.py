@@ -46,8 +46,7 @@ class Classifier:
         self.X_train, self.X_test, self.y_train, self.y_test = datasets
 
     def train(self, filename: str, target: str, silent=True):
-        Path(f"../data/{filename}").mkdir(parents=True, exist_ok=True)
-        df = pd.read_csv(f"../data/{filename}")
+        df = pd.read_csv(f"data/{filename}")
         self._prepare_data(df, target)
         self._smote_data()
         self.X_train = self._scale_data(self.X_train)
@@ -56,26 +55,25 @@ class Classifier:
         print("Model fitted")
 
     def predict(self, filename: str, target: str):
-        Path(f"../data/{filename}").mkdir(parents=True, exist_ok=True)
-        df = pd.read_csv(f"../data/{filename}")
+        df = pd.read_csv(f"data/{filename}")
         self._prepare_data(df, target)
         self.X_test = self._scale_data(self.X_test)
         y_pred = self.model.predict(self.X_test)
         score = recall_score(self.y_test, y_pred, average="macro")
         print("RECALL SCORE: ", score)
         ans = pd.DataFrame({"predict": y_pred})
-        ans.to_csv("../predict.csv")
+        ans.to_csv("predict.csv")
 
     def save(self, directory="classifier", model="model", scaler="scaler"):
-        Path(f"../models/{directory}").mkdir(parents=True, exist_ok=True)
-        self.model.save_model(f"../models/{directory}/{model}")
+        Path(f"models/{directory}").mkdir(parents=True, exist_ok=True)
+        self.model.save_model(f"models/{directory}/{model}")
         print("Model saved")
 
-        joblib.dump(self.scaler, f"../models/{directory}/{scaler}")
+        joblib.dump(self.scaler, f"models/{directory}/{scaler}")
         print("Scaler saved")
 
     def load(self, directory="classifier", model="model", scaler="scaler"):
-        self.model.load_model(f"../models/{directory}/{model}")
+        self.model.load_model(f"models/{directory}/{model}")
         print("Model loaded")
-        self.scaler = joblib.load(f"../models/{directory}/{scaler}")
+        self.scaler = joblib.load(f"models/{directory}/{scaler}")
         print("Scaler loaded")
