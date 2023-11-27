@@ -17,7 +17,7 @@ def train(cfg: DictConfig):
     epochs = cfg.train.epochs
     lr = cfg.train.lr
 
-    full_data = pd.read_csv(f'data/{cfg.train.dataset}')
+    full_data = pd.read_csv(f"data/{cfg.train.dataset}")
     X = full_data.drop(columns=cfg.train.target)
     y = full_data[cfg.train.target]
     X_train, X_test, y_train, y_test = train_test_split(
@@ -65,7 +65,7 @@ def train(cfg: DictConfig):
         valid_f1 = 0.0
 
         model.train()
-        for i, data in enumerate(train_loader, 0):
+        for data in train_loader:
             inputs, labels = data
 
             inputs = inputs.to(device)
@@ -136,5 +136,5 @@ def train(cfg: DictConfig):
     print("Finished Training")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     train()
