@@ -2,3 +2,5 @@ catboost_info
 predict.csv
 .idea
 ml-ops-405917-94bf3ccb6ab7.json
+*.pyc
+*/__pycache__
