@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 from torchmetrics.classification import F1Score
 
-from classes import CustomDataset, my_model
+from classes import CustomDataset, Classifier
 
 
 @hydra.main(version_base=None, config_path="../configs", config_name="config")
@@ -21,13 +21,14 @@ def train(cfg: DictConfig):
     X = full_data.drop(columns=cfg.train.target)
     y = full_data[cfg.train.target]
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, random_state=42, train_size=0.85, stratify=y
+        X, y, random_state=cfg.train.random_state,
+        train_size=cfg.train.train_size, stratify=y
     )
     X_train, y_train = np.array(X_train, dtype=np.float32), y_train.values
     X_test, y_test = np.array(X_test, dtype=np.float32), y_test.values
 
-    NUM_FEATURES = X.shape[-1]
-    NUM_CLASSES = np.unique(y).shape[0]
+    num_features = X.shape[-1]
+    num_classes = np.unique(y).shape[0]
 
     train_dataset = CustomDataset(
         torch.from_numpy(X_train).float(), torch.from_numpy(y_train).long()
@@ -40,7 +41,7 @@ def train(cfg: DictConfig):
     valid_loader = DataLoader(dataset=valid_dataset, batch_size=batch_size)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = my_model(NUM_FEATURES, NUM_CLASSES).to(device)
+    model = Classifier(num_features, num_classes).to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=lr)
     criterion = torch.nn.CrossEntropyLoss()
@@ -55,6 +56,7 @@ def train(cfg: DictConfig):
     best_valid_acc = 0.0
 
     f1 = F1Score(task="binary", num_classes=2)
+    best_model = model
 
     for epoch in range(epochs):
         train_loss = 0.0

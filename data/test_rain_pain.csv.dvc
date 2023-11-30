@@ -1,0 +1,5 @@
+outs:
+- md5: 07859b07c3555125b5869f1e8952734b
+  size: 878451
+  hash: md5
+  path: test_rain_pain.csv

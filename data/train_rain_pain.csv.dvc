@@ -1,0 +1,5 @@
+outs:
+- md5: 3018a95efa7beff197c88443d354aca3
+  size: 4287132
+  hash: md5
+  path: train_rain_pain.csv

@@ -16,9 +16,9 @@ class CustomDataset(Dataset):
         return len(self.X_data)
 
 
-class my_model(nn.Module):
+class Classifier(nn.Module):
     def __init__(self, features, num_classes):
-        super(my_model, self).__init__()
+        super(Classifier, self).__init__()
         self.linear_1 = nn.Linear(features, 256)
         self.linear_2 = nn.Linear(256, 128)
         self.linear_3 = nn.Linear(128, 64)
