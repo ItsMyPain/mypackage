@@ -9,10 +9,14 @@ from torch.utils.data import DataLoader
 from torchmetrics.classification import F1Score
 
 from classes import CustomDataset, Classifier
+from dvc.api import DVCFileSystem
 
 
 @hydra.main(version_base=None, config_path="../configs", config_name="config")
 def train(cfg: DictConfig):
+    fs = DVCFileSystem()
+    fs.get_file(f"data/{cfg.train.dataset}", f"data/{cfg.train.dataset}")
+
     batch_size = cfg.train.batch_size
     epochs = cfg.train.epochs
     lr = cfg.train.lr

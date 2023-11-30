@@ -3,10 +3,9 @@ train:
   target: RainTomorrow
   batch_size: 1024
   epochs: 4
-  lr: 3e-3
+  lr: 0.003
   random_state: 42
   train_size: 0.85
-
 test:
   dataset: test_rain_pain.csv
   target: RainTomorrow
