@@ -12,9 +12,6 @@ class CustomDataset(Dataset):
     def __getitem__(self, index):
         return self.X_data[index], self.y_data[index]
 
-    def __len__(self):
-        return len(self.X_data)
-
 
 class Classifier(nn.Module):
     def __init__(self, features, num_classes):

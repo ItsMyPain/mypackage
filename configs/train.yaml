@@ -1,0 +1,25 @@
+data:
+  name: data/train_rain_pain.csv
+  target: RainTomorrow
+  val_size: 0.15
+  seed: 42
+
+model:
+  input_dim: 18
+  hidden_dim1: 256
+  hidden_dim2: 128
+  hidden_dim3: 64
+  output_dim: 2
+  lr: 3e-3
+
+training:
+  batch_size: 128
+  epochs: 20
+  num_workers: 11
+  precision: 16-mixed
+  accum_grad_batches: 1
+  val_check_interval: 10
+
+mlflow:
+  uri: http://localhost:8080/
+  experiment_name: Default
