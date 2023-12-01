@@ -22,6 +22,8 @@ torchvision = {version = "^0.16.1+cpu", source = "pytorch"}
 torchmetrics = "^1.2.0"
 mlflow = "^2.8.1"
 lightning = "^2.1.2"
+onnx = "^1.15.0"
+onnxruntime = "^1.16.3"
 
 
 
