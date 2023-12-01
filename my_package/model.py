@@ -14,35 +14,35 @@ class MyModel(pl.LightningModule):
         self.save_hyperparameters()
         self.cfg = cfg
 
-        self.linear_1 = torch.nn.Linear(cfg.model.input_dim, cfg.model.hidden_dim1)
-        self.linear_2 = torch.nn.Linear(cfg.model.hidden_dim1, cfg.model.hidden_dim2)
-        self.linear_3 = torch.nn.Linear(cfg.model.hidden_dim2, cfg.model.hidden_dim3)
-        self.linear_4 = torch.nn.Linear(cfg.model.hidden_dim3, cfg.model.output_dim)
+        self.linear_1 = torch.nn.Linear(cfg.model.input_dim, cfg.model.output_dim)
+        # self.linear_2 = torch.nn.Linear(cfg.model.hidden_dim1, cfg.model.hidden_dim2)
+        # self.linear_3 = torch.nn.Linear(cfg.model.hidden_dim2, cfg.model.hidden_dim3)
+        # self.linear_4 = torch.nn.Linear(cfg.model.hidden_dim3, cfg.model.output_dim)
 
         self.act = torch.nn.ReLU()
 
-        self.batch_norm_1 = torch.nn.BatchNorm1d(cfg.model.hidden_dim1)
-        self.batch_norm_2 = torch.nn.BatchNorm1d(cfg.model.hidden_dim2)
-        self.batch_norm_3 = torch.nn.BatchNorm1d(cfg.model.hidden_dim3)
+        self.batch_norm_1 = torch.nn.BatchNorm1d(cfg.model.input_dim)
+        # self.batch_norm_2 = torch.nn.BatchNorm1d(cfg.model.hidden_dim2)
+        # self.batch_norm_3 = torch.nn.BatchNorm1d(cfg.model.hidden_dim3)
 
         self.loss_fn = torch.nn.CrossEntropyLoss()
         self.f1_fn = torchmetrics.classification.F1Score(task=cfg.model.f1_task, num_classes=cfg.model.output_dim)
 
     def forward(self, x):
-        x = self.linear_1(x)
         x = self.batch_norm_1(x)
         x = self.act(x)
+        x = self.linear_1(x)
 
-        x = self.linear_2(x)
-        x = self.batch_norm_2(x)
-        x = self.act(x)
-
-        x = self.linear_3(x)
-        x = self.batch_norm_3(x)
-        x = self.act(x)
-
-        x = self.linear_4(x)
-        x = self.act(x)
+        # x = self.linear_2(x)
+        # x = self.batch_norm_2(x)
+        # x = self.act(x)
+        #
+        # x = self.linear_3(x)
+        # x = self.batch_norm_3(x)
+        # x = self.act(x)
+        #
+        # x = self.linear_4(x)
+        # x = self.act(x)
 
         return softmax(x, dim=1)
 
