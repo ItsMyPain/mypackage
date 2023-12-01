@@ -9,6 +9,9 @@ from torch.utils.data import Dataset, DataLoader
 
 
 class MyDataset(Dataset):
+    X_data: torch.Tensor
+    y_data: torch.Tensor
+
     def __init__(self, dataframe: pd.DataFrame, target: str):
         super().__init__()
         self.X_data = torch.from_numpy(dataframe.drop(columns=target).values).float()
@@ -22,6 +25,8 @@ class MyDataset(Dataset):
 
 
 class MyDataModule(pl.LightningDataModule):
+    train_dataset: MyDataset
+    val_dataset: MyDataset
 
     def __init__(
             self,

@@ -1,7 +1,10 @@
 import hydra
 import lightning.pytorch as pl
 import lightning.pytorch.loggers as pl_loggers
+import mlflow
+import numpy
 import torch
+from mlflow.models import infer_signature
 from omegaconf import DictConfig
 
 from my_package.data import MyDataModule
@@ -23,13 +26,10 @@ def train(cfg: DictConfig):
 
     model = MyModel(cfg)
 
-    loggers = [
-        pl_loggers.MLFlowLogger(
-            experiment_name=cfg.mlflow.experiment_name,
-            tracking_uri=cfg.mlflow.uri,
-            log_model=True
-        )
-    ]
+    logger = pl_loggers.MLFlowLogger(
+        experiment_name=cfg.mlflow.experiment_name,
+        tracking_uri=cfg.mlflow.uri
+    )
 
     callbacks = [
         pl.callbacks.LearningRateMonitor(logging_interval="epoch")
@@ -41,14 +41,26 @@ def train(cfg: DictConfig):
         accumulate_grad_batches=cfg.training.accum_grad_batches,
         val_check_interval=cfg.training.val_check_interval,
         log_every_n_steps=cfg.training.log_every_n_steps,
-        logger=loggers,
+        logger=logger,
         callbacks=callbacks
     )
 
     trainer.fit(model, datamodule=data_module)
+
+    with mlflow.start_run(run_id=logger.run_id):
+        mlflow.pytorch.log_model(
+            pytorch_model=model,
+            artifact_path="model",
+            signature=infer_signature(
+                model_input=numpy.zeros((1, cfg.model.input_dim)),
+                model_output=numpy.zeros((1, cfg.model.output_dim))
+            ),
+            input_example=numpy.zeros((1, cfg.model.input_dim)),
+            registered_model_name=cfg.model.name)
+
     torch.onnx.export(model=model,
                       args=torch.zeros((1, cfg.model.input_dim)),
-                      f="models/model.onnx")
+                      f=cfg.model.path)
 
 
 if __name__ == "__main__":
