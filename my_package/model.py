@@ -2,6 +2,7 @@ from typing import Any
 
 import lightning.pytorch as pl
 import torch
+import torchmetrics
 from omegaconf import DictConfig
 from torch import softmax
 from torch.optim import Adam
@@ -25,6 +26,7 @@ class MyModel(pl.LightningModule):
         self.batch_norm_3 = torch.nn.BatchNorm1d(cfg.model.hidden_dim3)
 
         self.loss_fn = torch.nn.CrossEntropyLoss()
+        self.f1_fn = torchmetrics.classification.F1Score(task=cfg.model.f1_task, num_classes=cfg.model.output_dim)
 
     def forward(self, x):
         x = self.linear_1(x)
@@ -47,10 +49,6 @@ class MyModel(pl.LightningModule):
     def configure_optimizers(self) -> Any:
         return Adam(self.parameters(), lr=self.cfg.model.lr)
 
-    # def on_before_optimizer_step(self, optimizer):
-    #     self.log_dict(pl.utilities.grad_norm(self, norm_type=2))
-    #     super().on_before_optimizer_step(optimizer)
-
     def training_step(self, batch: Any, batch_idx: int, dataloader_idx=0):
         inputs, labels = batch
         outputs = self(inputs)
@@ -64,5 +62,7 @@ class MyModel(pl.LightningModule):
         loss = self.loss_fn(outputs, labels)
         predicted = torch.argmax(outputs, dim=1)
         val_acc = torch.sum(labels == predicted).item() / (len(predicted) * 1.0)
-        self.log_dict({"val_loss": loss, "val_acc": val_acc}, on_step=False, on_epoch=True, prog_bar=True)
+        f1 = self.f1_fn(predicted, labels).item()
+        self.log_dict({"val_loss": loss, "val_acc": val_acc, "val_f1": f1},
+                      on_step=False, on_epoch=True, prog_bar=True)
         return loss

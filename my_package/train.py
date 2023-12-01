@@ -177,6 +177,7 @@ def train_v2(cfg: DictConfig):
         precision=cfg.training.precision,
         accumulate_grad_batches=cfg.training.accum_grad_batches,
         val_check_interval=cfg.training.val_check_interval,
+        log_every_n_steps=cfg.training.log_every_n_steps,
         logger=loggers,
         callbacks=callbacks
     )
