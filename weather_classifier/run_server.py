@@ -23,7 +23,8 @@ def run_server(cfg: DictConfig):
         for x in data:
             inputs = torch.from_numpy(np.array([x])).float()
             try:
-                outputs = session.run(None, {inputs_name: inputs.numpy()})[0]
+                outputs = session.run(None,
+                                      {inputs_name: inputs.numpy()})[0]
                 answers.append(outputs[0].tolist())
             except Exception as e:
                 return {"error": str(e)}, 400

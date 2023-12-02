@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "my_package"
+name = "weather_classifier"
 version = "0.1.0"
-description = "My first poetry project"
+description = "My MLOPS project"
 authors = ["Sergey Agibalov <agibalov.sd@phystech.edu>"]
 readme = "README.md"
 

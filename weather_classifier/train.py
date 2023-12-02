@@ -7,8 +7,8 @@ import torch
 from mlflow.models import infer_signature
 from omegaconf import DictConfig
 
-from my_package.data import MyDataModule
-from my_package.model import MyModel
+from weather_classifier.data import MyDataModule
+from weather_classifier.model import MyModel
 
 
 @hydra.main(version_base=None, config_path="../configs", config_name="train")
