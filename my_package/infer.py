@@ -8,7 +8,7 @@ from torchmetrics import F1Score
 
 
 @hydra.main(version_base=None, config_path="../configs", config_name="test")
-def infer(cfg: DictConfig = None):
+def infer(cfg: DictConfig):
     fs = DVCFileSystem()
     fs.get_file(cfg.data.name, cfg.data.name)
 
