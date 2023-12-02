@@ -31,7 +31,7 @@ def run_server(cfg: DictConfig):
                 return {"error": str(e)}, 400
         return {"outputs": answers}, 200
 
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host=cfg.server.host, port=cfg.server.port)
 
 
 if __name__ == "__main__":

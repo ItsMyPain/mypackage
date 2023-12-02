@@ -25,8 +25,8 @@ class MyDataset(Dataset):
 
 
 class MyDataModule(pl.LightningDataModule):
-    train_dataset: MyDataset
-    val_dataset: MyDataset
+    train_dataset: MyDataset | None
+    val_dataset: MyDataset | None
 
     def __init__(
         self,
