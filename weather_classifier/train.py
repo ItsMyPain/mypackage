@@ -21,19 +21,16 @@ def train(cfg: DictConfig):
         val_size=cfg.data.val_size,
         seed=cfg.data.seed,
         batch_size=cfg.training.batch_size,
-        num_workers=cfg.training.num_workers
+        num_workers=cfg.training.num_workers,
     )
 
     model = MyModel(cfg)
 
     logger = pl_loggers.MLFlowLogger(
-        experiment_name=cfg.mlflow.experiment_name,
-        tracking_uri=cfg.mlflow.uri
+        experiment_name=cfg.mlflow.experiment_name, tracking_uri=cfg.mlflow.uri
     )
 
-    callbacks = [
-        pl.callbacks.LearningRateMonitor(logging_interval="epoch")
-    ]
+    callbacks = [pl.callbacks.LearningRateMonitor(logging_interval="epoch")]
 
     trainer = pl.Trainer(
         max_epochs=cfg.training.epochs,
@@ -42,7 +39,7 @@ def train(cfg: DictConfig):
         val_check_interval=cfg.training.val_check_interval,
         log_every_n_steps=cfg.training.log_every_n_steps,
         logger=logger,
-        callbacks=callbacks
+        callbacks=callbacks,
     )
 
     trainer.fit(model, datamodule=data_module)
@@ -53,14 +50,15 @@ def train(cfg: DictConfig):
             artifact_path="model",
             signature=infer_signature(
                 model_input=numpy.zeros((1, cfg.model.input_dim)),
-                model_output=numpy.zeros((1, cfg.model.output_dim))
+                model_output=numpy.zeros((1, cfg.model.output_dim)),
             ),
             input_example=numpy.zeros((1, cfg.model.input_dim)),
-            registered_model_name=cfg.model.name)
+            registered_model_name=cfg.model.name,
+        )
 
-    torch.onnx.export(model=model,
-                      args=torch.zeros((1, cfg.model.input_dim)),
-                      f=cfg.model.path)
+    torch.onnx.export(
+        model=model, args=torch.zeros((1, cfg.model.input_dim)), f=cfg.model.path
+    )
 
 
 if __name__ == "__main__":

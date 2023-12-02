@@ -26,7 +26,9 @@ class MyModel(pl.LightningModule):
         # self.batch_norm_3 = torch.nn.BatchNorm1d(cfg.model.hidden_dim3)
 
         self.loss_fn = torch.nn.CrossEntropyLoss()
-        self.f1_fn = torchmetrics.classification.F1Score(task=cfg.model.f1_task, num_classes=cfg.model.output_dim)
+        self.f1_fn = torchmetrics.classification.F1Score(
+            task=cfg.model.f1_task, num_classes=cfg.model.output_dim
+        )
 
     def forward(self, x):
         x = self.batch_norm_1(x)
@@ -63,6 +65,10 @@ class MyModel(pl.LightningModule):
         predicted = torch.argmax(outputs, dim=1)
         val_acc = torch.sum(labels == predicted).item() / (len(predicted) * 1.0)
         f1 = self.f1_fn(predicted, labels).item()
-        self.log_dict({"val_loss": loss, "val_acc": val_acc, "val_f1": f1},
-                      on_step=False, on_epoch=True, prog_bar=True)
+        self.log_dict(
+            {"val_loss": loss, "val_acc": val_acc, "val_f1": f1},
+            on_step=False,
+            on_epoch=True,
+            prog_bar=True,
+        )
         return loss

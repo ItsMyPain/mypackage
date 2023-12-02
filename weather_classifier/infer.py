@@ -29,5 +29,5 @@ def infer(cfg: DictConfig):
     print(f"test_acc: {test_acc:.4f}, test_f1: {test_f1:.4f}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     infer()

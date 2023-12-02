@@ -1,0 +1,8 @@
+[flake8]
+per-file-ignores =
+    # line too long
+    weather_classifier/data.py: E501,
+    weather_classifier/infer.py: E501,
+    weather_classifier/train.py: E501
+    weather_classifier/run_server.py: E501
+    weather_classifier/model.py: E501

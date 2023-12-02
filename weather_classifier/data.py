@@ -5,7 +5,7 @@ import pandas as pd
 import torch
 from dvc.fs import DVCFileSystem
 from sklearn.model_selection import train_test_split
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader, Dataset
 
 
 class MyDataset(Dataset):
@@ -29,13 +29,13 @@ class MyDataModule(pl.LightningDataModule):
     val_dataset: MyDataset
 
     def __init__(
-            self,
-            csv_path: str,
-            target: str,
-            val_size: float,
-            seed: int,
-            batch_size: int,
-            num_workers: int = 0
+        self,
+        csv_path: str,
+        target: str,
+        val_size: float,
+        seed: int,
+        batch_size: int,
+        num_workers: int = 0,
     ):
         super().__init__()
         self.save_hyperparameters()
@@ -55,7 +55,9 @@ class MyDataModule(pl.LightningDataModule):
 
     def setup(self, stage: Optional[str] = None):
         df = pd.read_csv(self.csv_path)
-        train_df, val_df = train_test_split(df, test_size=self.val_size, random_state=self.seed)
+        train_df, val_df = train_test_split(
+            df, test_size=self.val_size, random_state=self.seed
+        )
         self.train_dataset = MyDataset(dataframe=train_df, target=self.target)
         self.val_dataset = MyDataset(dataframe=val_df, target=self.target)
 
@@ -64,7 +66,7 @@ class MyDataModule(pl.LightningDataModule):
             self.train_dataset,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
-            shuffle=True
+            shuffle=True,
         )
 
     def val_dataloader(self) -> DataLoader:
@@ -72,5 +74,5 @@ class MyDataModule(pl.LightningDataModule):
             self.val_dataset,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
-            shuffle=False
+            shuffle=False,
         )
