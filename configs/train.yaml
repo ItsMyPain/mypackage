@@ -17,9 +17,9 @@ model:
 
 training:
   batch_size: 1024
-  epochs: 40
+  epochs: 1
   num_workers: 2
-  precision: bf16-mixed
+  precision: 32
   accum_grad_batches: 1
   val_check_interval: 10
   log_every_n_steps: 10

@@ -29,13 +29,13 @@ class MyDataModule(pl.LightningDataModule):
     val_dataset: MyDataset | None
 
     def __init__(
-        self,
-        csv_path: str,
-        target: str,
-        val_size: float,
-        seed: int,
-        batch_size: int,
-        num_workers: int = 0,
+            self,
+            csv_path: str,
+            target: str,
+            val_size: float,
+            seed: int,
+            batch_size: int,
+            num_workers: int = 0,
     ):
         super().__init__()
         self.save_hyperparameters()
